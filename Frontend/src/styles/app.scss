@@ -19,7 +19,7 @@ a {
   color: black;
 }
 
-$colo1: white;
+$color1: white;
 $color2: rgb(46, 46, 46);
 $color3: rgb(0, 104, 136);
 
@@ -34,6 +34,9 @@ $color3: rgb(0, 104, 136);
 }
 
 @import "admin-styles/mixin";
+
+@import "_home.scss";
+@import "_cart.scss";
 
 @import "admin-styles/dashboard";
 @import "admin-styles/products";
