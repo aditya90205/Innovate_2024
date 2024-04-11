@@ -5,30 +5,26 @@ import {
   NewProductRequestBody,
   SearchRequestQuery,
 } from "../types/types.js";
-import { Product } from "../models/product.js";
+import { Product } from "../models/product.models.js";
 import ErrorHandler from "../utils/utility-class.js";
 import { rm } from "fs"; // use for removing images from uploads folder
 import { myCache } from "../app.js";
 import { invalidateCache } from "../utils/invalidate.js";
 
-
 // REVALIDATE on New,Update,Delete Product & on New Order
 export const getLatestProducts = TryCatch(async (req, res, next) => {
-
   let products = [];
-  
+
   // SEARCH PRODUCT IN CACHE MEMORY
-  if(myCache.has("latest-products")){
+  if (myCache.has("latest-products")) {
     products = JSON.parse(myCache.get("latest-products") as string);
-  }
-  else{
+  } else {
     // IF PRODUCT NOT FOUND IN CACHE THEN FIND IN DATABASE
     products = await Product.find({}).sort({ createdAt: -1 }).limit(5);
-  
+
     // SET PRODUCT IN CACHE MEMORY
     myCache.set("latest-products", JSON.stringify(products));
   }
-
 
   return res.status(200).json({
     success: true,
@@ -36,18 +32,15 @@ export const getLatestProducts = TryCatch(async (req, res, next) => {
   });
 });
 
-
 // REVALIDATE on New,Update,Delete Product & on New Order
 export const getAllCategories = TryCatch(async (req, res, next) => {
   let categories = [];
 
-  if(myCache.has("categories")){
+  if (myCache.has("categories")) {
     categories = JSON.parse(myCache.get("categories") as string);
-  }
-  else{
+  } else {
     categories = await Product.distinct("category");
-    myCache.set("categories", JSON.stringify
-    (categories));
+    myCache.set("categories", JSON.stringify(categories));
   }
 
   return res.status(200).json({
@@ -56,18 +49,14 @@ export const getAllCategories = TryCatch(async (req, res, next) => {
   });
 });
 
-
 // REVALIDATE on New,Update,Delete Product & on New Order
 export const getAdminProducts = TryCatch(async (req, res, next) => {
-
   let products = [];
-  if(myCache.has("all-products")){
+  if (myCache.has("all-products")) {
     products = JSON.parse(myCache.get("all-products") as string);
-  }
-  else{
+  } else {
     products = await Product.find({});
-    myCache.set("all-products", JSON.stringify
-    (products));
+    myCache.set("all-products", JSON.stringify(products));
   }
 
   return res.status(200).json({
@@ -76,21 +65,17 @@ export const getAdminProducts = TryCatch(async (req, res, next) => {
   });
 });
 
-
 // REVALIDATE on New,Update,Delete Product & on New Order
 export const getSingleProduct = TryCatch(async (req, res, next) => {
-
   let product;
   const id = req.params.id;
-  if(myCache.has(`product-${id}`)){
+  if (myCache.has(`product-${id}`)) {
     product = JSON.parse(myCache.get(`product-${id}`) as string);
-  }
-  else{
+  } else {
     product = await Product.findById(id);
     if (!product) return next(new ErrorHandler("Product Not Found", 404));
 
-    myCache.set(`product-${id}`, JSON.stringify
-    (product));
+    myCache.set(`product-${id}`, JSON.stringify(product));
   }
 
   return res.status(200).json({
@@ -98,7 +83,6 @@ export const getSingleProduct = TryCatch(async (req, res, next) => {
     product,
   });
 });
-
 
 export const newProduct = TryCatch(
   async (req: Request<{}, {}, NewProductRequestBody>, res, next) => {
@@ -124,7 +108,7 @@ export const newProduct = TryCatch(
       photo: photo.path,
     });
 
-    await invalidateCache({product:true});
+    await invalidateCache({ product: true });
 
     return res.status(201).json({
       success: true,
@@ -155,7 +139,7 @@ export const updateProduct = TryCatch(async (req, res, next) => {
 
   await product.save();
 
-  await invalidateCache({product:true});
+  await invalidateCache({ product: true, productId:String(product._id) });
 
   return res.status(200).json({
     success: true,
@@ -168,16 +152,16 @@ export const deleteProduct = TryCatch(async (req, res, next) => {
   if (!product) return next(new ErrorHandler("Product Not Found", 404));
 
   rm(product.photo, () => {
-    console.log("Photo Deleted");
+    console.log("Product Photo Deleted");
   });
 
-  await Product.deleteOne();
+  await product.deleteOne();
 
-  await invalidateCache({product:true});
+  await invalidateCache({ product: true, productId:String(product._id) });
 
   return res.status(200).json({
     success: true,
-    message: "Product Updated Successfully",
+    message: "Product Deleted Successfully",
   });
 });
 
@@ -210,26 +194,26 @@ export const getAllProducts = TryCatch(
     if (category) baseQuery.category = category;
 
     const productPromise = Product.find(baseQuery)
-    .sort(sort && { price: sort === "asc" ? 1 : -1 })
-    .limit(limit)
-    .skip(skip);
-    
+      .sort(sort && { price: sort === "asc" ? 1 : -1 })
+      .limit(limit)
+      .skip(skip);
+
     // RUN TWO OR MORE AWAIT QUERY PARALLELY
     const [products, filteredOnlyProduct] = await Promise.all([
-       productPromise,
-       Product.find(baseQuery)
-    ])
+      productPromise,
+      Product.find(baseQuery),
+    ]);
     // const products = await Product.find(baseQuery)
     //   .sort(sort && { price: sort === "asc" ? 1 : -1 })
     //   .limit(limit)
     //   .skip(skip);
 
-    const totalPage = Math.ceil(filteredOnlyProduct.length / limit) ;
+    const totalPage = Math.ceil(filteredOnlyProduct.length / limit);
 
     return res.status(200).json({
       success: true,
       products,
-      totalPage
+      totalPage,
     });
   }
 );
