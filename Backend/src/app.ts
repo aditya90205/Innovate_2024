@@ -3,13 +3,16 @@ import { connectDB } from "./utils/connectDB.js";
 import { errorMiddleware } from "./middlewares/error.js";
 import NodeCache from "node-cache";
 import { config } from "dotenv";
+import morgan from "morgan";
 
 
 // Importing Routes
 import userRoute from "./routes/user.routes.js";
 import productRoute from "./routes/product.routes.js";
 import orderRoute from "./routes/order.routes.js";
-import morgan from "morgan";
+import paymentRoute from "./routes/payment.routes.js";
+
+
 
 config({
     path:"./.env",
@@ -36,6 +39,7 @@ app.get('/', (req,res)=> {
 app.use('/api/v1/user', userRoute);
 app.use('/api/v1/product', productRoute);
 app.use('/api/v1/order', orderRoute);
+app.use('/api/v1/payment', paymentRoute);
 
 
 // Static Folder Middleware
