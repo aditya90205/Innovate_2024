@@ -8,8 +8,10 @@ import { calculatePercentage, getInventories } from "../utils/features.js";
 export const getDashboardStats = TryCatch(async (req, res, next) => {
   let stats = {};
 
-  if (myCache.has("admin-stats")) {
-    stats = JSON.parse(myCache.get("admin-stats") as string);
+  const key = "admin-stats";
+
+  if (myCache.has(key)) {
+    stats = JSON.parse(myCache.get(key) as string);
   } else {
     const today = new Date();
     const sixMonthAgo = new Date();
@@ -148,7 +150,7 @@ export const getDashboardStats = TryCatch(async (req, res, next) => {
 
     lastSixMonthOrders.forEach((order) => {
       const creationDate = order.createdAt;
-      const monthDiff = today.getMonth() - creationDate.getMonth();
+      const monthDiff = (today.getMonth() - creationDate.getMonth() + 12) % 12;
 
       if (monthDiff < 6) {
         orderMonthCounts[5 - monthDiff] += 1;
@@ -186,7 +188,7 @@ export const getDashboardStats = TryCatch(async (req, res, next) => {
       latestTransactions: modifiedLatestTransaction,
     };
 
-    myCache.set("admin-stats", JSON.stringify(stats));
+    myCache.set(key, JSON.stringify(stats));
   }
 
   return res.status(200).json({
@@ -197,8 +199,9 @@ export const getDashboardStats = TryCatch(async (req, res, next) => {
 
 export const getPieCharts = TryCatch(async (req, res, next) => {
   let charts;
-  if (myCache.has("admin-pie-charts")) {
-    charts = JSON.parse(myCache.get("admin-pie-charts") as string);
+  const key  = "admin-pie-charts";
+  if (myCache.has(key)) {
+    charts = JSON.parse(myCache.get(key) as string);
   } else {
     const allOrderPromise = Order.find({}).select([
       "subtotal",
@@ -298,7 +301,7 @@ export const getPieCharts = TryCatch(async (req, res, next) => {
       adminCustomer,
     };
 
-    myCache.set("admin-pie-charts", JSON.stringify(charts));
+    myCache.set(key, JSON.stringify(charts));
   }
   return res.status(200).json({
     success: true,
@@ -306,6 +309,9 @@ export const getPieCharts = TryCatch(async (req, res, next) => {
   });
 });
 
-export const getBarCharts = TryCatch(async (req, res, next) => {});
+export const getBarCharts = TryCatch(async (req, res, next) => {
+  let charts;
+  
+});
 
 export const getLineCharts = TryCatch(async (req, res, next) => {});
