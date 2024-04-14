@@ -11,6 +11,7 @@ import userRoute from "./routes/user.routes.js";
 import productRoute from "./routes/product.routes.js";
 import orderRoute from "./routes/order.routes.js";
 import paymentRoute from "./routes/payment.routes.js";
+import dashBoardRoute from "./routes/stats.routes.js";
 
 
 
@@ -40,6 +41,7 @@ app.use('/api/v1/user', userRoute);
 app.use('/api/v1/product', productRoute);
 app.use('/api/v1/order', orderRoute);
 app.use('/api/v1/payment', paymentRoute);
+app.use('/api/v1/dashboard', dashBoardRoute);
 
 
 // Static Folder Middleware
