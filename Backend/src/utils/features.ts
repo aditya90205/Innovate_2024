@@ -39,15 +39,18 @@ export const getInventories = async ({categories, productsCount}: {categories: s
 
 interface MyDocument extends Document {
   createdAt: Date;
+  discount?: number,
+  total?: number
 }
 
 type funcProps = {
   length:number, 
   docArr: MyDocument[],
-  today: Date
+  today: Date,
+  property?: "discount" | "total"
 }
 
-export const getChartData = ({length, docArr, today}: funcProps) => {
+export const getChartData = ({length, docArr, today, property}: funcProps) => {
 
   const data: number[] = new Array(length).fill(0);
 
@@ -56,7 +59,12 @@ export const getChartData = ({length, docArr, today}: funcProps) => {
     const monthDiff = (today.getMonth() - creationDate.getMonth() + 12) % 12;
 
     if (monthDiff < length) {
-      data[length - monthDiff - 1] += 1;
+      if(property){
+        data[length - monthDiff - 1] +=  i[property]!;
+      }
+      else{
+        data[length - monthDiff - 1] += 1;
+      }
     }
   });
 
