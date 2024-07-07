@@ -2,6 +2,8 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { lazy, Suspense } from "react";
 import Loader from "./components/Loader";
 import Header from "./components/Header";
+import { Toaster } from "react-hot-toast";
+
 
 // lazy function is used for rendering a page when its called not all the time therefore they preventing the network traffic
 const Home = lazy(() => import("./pages/Home"));
@@ -88,6 +90,7 @@ const App = () => {
           ;
         </Routes>
       </Suspense>
+      <Toaster position="bottom-center"/>
     </Router>
   );
 };
