@@ -5,6 +5,8 @@ import NodeCache from "node-cache";
 import { config } from "dotenv";
 import morgan from "morgan";
 import Stripe from "stripe";
+import cors from "cors";
+
 
 
 // Importing Routes
@@ -33,14 +35,14 @@ export const myCache = new NodeCache();
 const app = express();
 
 app.use(express.json());
-
 app.use(morgan('dev'));
+app.use(cors());
 
 app.get('/', (req,res)=> {
     res.send('API working with /api/v1');
 })
 
-// Usind Routes
+// Using Routes
 app.use('/api/v1/user', userRoute);
 app.use('/api/v1/product', productRoute);
 app.use('/api/v1/order', orderRoute);
