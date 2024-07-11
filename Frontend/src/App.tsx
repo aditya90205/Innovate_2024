@@ -1,8 +1,14 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import Loader from "./components/Loader";
 import Header from "./components/Header";
 import { Toaster } from "react-hot-toast";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "./firebase";
+import { useDispatch, useSelector } from "react-redux";
+import { userExist, userNotExist } from "./redux/reducer/useReducer";
+import { getUser } from "./redux/api/userAPI";
+import { userReducerInitialState } from "./types/reducer-types";
 
 
 // lazy function is used for rendering a page when its called not all the time therefore they preventing the network traffic
@@ -35,10 +41,25 @@ const TransactionManagement = lazy(
 );
 
 const App = () => {
-  return (
+  const {user, loading} = useSelector((state: {userReducer: userReducerInitialState}) => state.userReducer)
+  const dispatch = useDispatch();
+  useEffect(() => {
+     onAuthStateChanged(auth, async (user) => {
+      if(user){
+        const data = await getUser(user.uid);
+        console.log("Logged In");
+        dispatch(userExist(data.user));
+      }
+      else{
+        dispatch(userNotExist()); 
+      }
+     })
+  }, [])
+  
+  return loading ? <Loader /> : (
     <Router>
       {/* Header */}
-      <Header />
+      <Header user={user}/>
       <Suspense fallback={<Loader />}>
         <Routes>
           <Route path="/" element={<Home />} />
