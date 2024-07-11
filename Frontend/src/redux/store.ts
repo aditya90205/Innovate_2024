@@ -10,5 +10,5 @@ export const store = configureStore({
         [userReducer.name]: userReducer.reducer,
     },
     // middleware: (mid) => [...mid(),userAPI.middleware],
-    middleware: (getDefaultMiddleware) => getDefaultMiddleware().prepend(userAPI.middleware),
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(userAPI.middleware),
 });

@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { userExist, userNotExist } from "./redux/reducer/useReducer";
 import { getUser } from "./redux/api/userAPI";
 import { userReducerInitialState } from "./types/reducer-types";
-
+import ProtectedRoute from "./components/ProtectedRoute";
 
 // lazy function is used for rendering a page when its called not all the time therefore they preventing the network traffic
 const Home = lazy(() => import("./pages/Home"));
@@ -19,7 +19,6 @@ const Shipping = lazy(() => import("./pages/Shipping"));
 const Login = lazy(() => import("./pages/Login"));
 const Orders = lazy(() => import("./pages/Orders"));
 const OrderDetails = lazy(() => import("./pages/OrderDetails"));
- 
 
 // Admin Routes Importing
 const Dashboard = lazy(() => import("./pages/admin/dashboard"));
@@ -41,49 +40,62 @@ const TransactionManagement = lazy(
 );
 
 const App = () => {
-  const {user, loading} = useSelector((state: {userReducer: userReducerInitialState}) => state.userReducer)
+  const { user, loading } = useSelector(
+    (state: { userReducer: userReducerInitialState }) => state.userReducer
+  );
   const dispatch = useDispatch();
   useEffect(() => {
-     onAuthStateChanged(auth, async (user) => {
-      if(user){
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
         const data = await getUser(user.uid);
         console.log("Logged In");
         dispatch(userExist(data.user));
+      } else {
+        dispatch(userNotExist());
       }
-      else{
-        dispatch(userNotExist()); 
-      }
-     })
-  }, [])
-  
-  return loading ? <Loader /> : (
+    });
+  }, []);
+
+  return loading ? (
+    <Loader />
+  ) : (
     <Router>
       {/* Header */}
-      <Header user={user}/>
+      <Header user={user} />
       <Suspense fallback={<Loader />}>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/search" element={<Search />} />
           <Route path="/cart" element={<Cart />} />
-          
+
           {/* Not Logged In Route */}
-          <Route path="/login" element={<Login />} />
+          <Route
+            path="/login"
+            element={
+              <ProtectedRoute isAuthenticated={user ? false : true}>
+                <Login />
+              </ProtectedRoute>
+            }
+          />
 
-           
           {/* Logged In User Routes */}
-          <Route>
-          <Route path="/shipping" element={<Shipping />} />
-          <Route path="/orders" element={<Orders />} />
-          <Route path="/order/:id" element={<OrderDetails />} />
+          <Route
+            element={<ProtectedRoute isAuthenticated={user ? true : false} />}
+          >
+            <Route path="/shipping" element={<Shipping />} />
+            <Route path="/orders" element={<Orders />} />
+            <Route path="/order/:id" element={<OrderDetails />} />
           </Route>
-
-         
 
           {/* ADMIN ROUTES */}
           <Route
-          // element={
-          //   <ProtectedRoute isAuthenticated={true} adminRoute={true} isAdmin={true} />
-          // }
+            element={
+              <ProtectedRoute
+                isAuthenticated={true}
+                adminOnly={true}
+                admin={user?.role === "admin" ? true : false}
+              />
+            }
           >
             <Route path="/admin/dashboard" element={<Dashboard />} />
             <Route path="/admin/product" element={<Products />} />
@@ -110,7 +122,7 @@ const App = () => {
           </Route>
         </Routes>
       </Suspense>
-      <Toaster position="bottom-center"/>
+      <Toaster position="bottom-center" />
     </Router>
   );
 };
