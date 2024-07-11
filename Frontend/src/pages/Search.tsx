@@ -1,19 +1,32 @@
 import { useState } from "react";
 import ProductCard from "../components/ProductCard";
+import { useCategoriesQuery } from "../redux/api/productAPI";
+import { CustomError } from "../types/api-types";
+import toast from "react-hot-toast";
 
 const Search = () => {
+  const {
+    data: categoriesResponse,
+    isLoading: loadingCategories,
+    isError,
+    error,
+  } = useCategoriesQuery("");
+
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState("");
   const [maxPrice, setMaxPrice] = useState(100000);
   const [category, setCategory] = useState("");
   const [page, setPage] = useState(1);
 
-  const addToCartHandler = () => {
+  const addToCartHandler = () => {};
 
+  const isPrevPage = page > 1;
+  const isNextPage = page < 4;
+
+  if(isError){
+    const err = error as CustomError;
+    toast.error(err.data.message);
   }
-
-  const isPrevPage = true;
-  const isNextPage = true;
 
   return (
     <div className="product-search-page">
@@ -45,9 +58,12 @@ const Search = () => {
             value={category}
             onChange={(e) => setCategory(e.target.value)}
           >
-            <option value="">All</option>
-            <option value="">Sample1</option>
-            <option value="">Sample2</option>
+            <option value="">ALL</option>
+            {
+              !loadingCategories && categoriesResponse?.categories.map((i) => (
+                <option key={i} value={i}>{i.toUpperCase()}</option>
+              ))
+            }
           </select>
         </div>
       </aside>
@@ -60,19 +76,31 @@ const Search = () => {
           onChange={(e) => setSearch(e.target.value)}
         />
         <div className="search-product-list">
-        <ProductCard
-          productId="asda"
-          name="Macbook"
-          price={12000}
-          stock={5}
-          handler={addToCartHandler}
-          photo="https://m.media-amazon.com/images/I/71vFKBpKakL._SX522_.jpg"
-        />
+          <ProductCard
+            productId="asda"
+            name="Macbook"
+            price={12000}
+            stock={5}
+            handler={addToCartHandler}
+            photo="https://m.media-amazon.com/images/I/71vFKBpKakL._SX522_.jpg"
+          />
         </div>
         <article>
-          <button disabled={!isPrevPage} onClick={()=>setPage(prev => prev-1)}>Prev</button>
-          <span>{page} of {4}</span>
-          <button disabled={!isNextPage} onClick={()=>setPage(prev => prev+1)}>Next</button>
+          <button
+            disabled={!isPrevPage}
+            onClick={() => setPage((prev) => prev - 1)}
+          >
+            Prev
+          </button>
+          <span>
+            {page} of {4}
+          </span>
+          <button
+            disabled={!isNextPage}
+            onClick={() => setPage((prev) => prev + 1)}
+          >
+            Next
+          </button>
         </article>
       </main>
     </div>
