@@ -62,7 +62,7 @@ $color3: rgb(0, 104, 136);
 .heading {
   @include heading;
   margin: 1rem 0;
-  text-align: center
+  text-align: center;
 }
 
 .header {
@@ -101,10 +101,6 @@ $color3: rgb(0, 104, 136);
     }
   }
 }
-
-
-
-
 
 .admin-container {
   @include grid(1fr 4fr, 2rem);
@@ -270,6 +266,20 @@ $color3: rgb(0, 104, 136);
   }
 }
 
+.skeleton-loader {
+  display: flex;
+  flex-direction: column;
+}
+
+.skeleton-shape {
+  width: 100%;
+  height: 30px;
+  background-color: #ddd;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  animation: skeleton-loading 1.5s infinite;
+}
+
 @keyframes loading-animation {
   to {
     transform: rotateZ(360deg);
@@ -278,5 +288,16 @@ $color3: rgb(0, 104, 136);
 @keyframes up-and-down {
   to {
     transform: translate(-50%, -20%);
+  }
+}
+@keyframes skeleton-loading {
+  0% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.6;
   }
 }
