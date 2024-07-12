@@ -8,7 +8,6 @@ export type CustomError = {
     }
 }
 
-
 export type MessageResponse = {
     message: string;
     success: boolean;
@@ -27,4 +26,39 @@ export type AllProductsResponse = {
 export type CategoriesResponse = {
     success: boolean;
     categories: string[];
+}
+
+export type SearchProductsResponse = {
+    success: boolean;
+    products: Product[];
+    totalPage: number;
+}
+
+export type ProductResponse = {
+    success: boolean;
+    product: Product;
+}
+
+export type SearchProductsRequest = {
+    search: string;
+    price: number;
+    page: number;
+    category: string;
+    sort: string;
+}
+
+export type NewProductRequest = {
+    id: string;
+    formData: FormData;
+}
+
+export type UpdateProductRequest = {
+    userId: string;
+    productId: string;
+    formData: FormData;
+}
+
+export type DeleteProductRequest = {
+    userId: string;
+    productId: string;
 }
