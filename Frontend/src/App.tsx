@@ -6,7 +6,7 @@ import { Toaster } from "react-hot-toast";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./firebase";
 import { useDispatch, useSelector } from "react-redux";
-import { userExist, userNotExist } from "./redux/reducer/useReducer";
+import { userExist, userNotExist } from "./redux/reducer/userReducer";
 import { getUser } from "./redux/api/userAPI";
 import { userReducerInitialState } from "./types/reducer-types";
 import ProtectedRoute from "./components/ProtectedRoute";

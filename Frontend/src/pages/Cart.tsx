@@ -1,27 +1,40 @@
 import { useEffect, useState } from "react";
 import { VscError } from "react-icons/vsc";
-import CartItem from "../components/CartItem";
+import CartItemCard from "../components/CartItem";
 import { Link } from "react-router-dom";
-
-const cartItems = [
-  {
-    productId: "asda",
-    photo: "https://m.media-amazon.com/images/I/71vFKBpKakL._SX522_.jpg",
-    name: "Macbook",
-    price: 12000,
-    quantity: 4,
-    stock: 10,
-  },
-];
-const subTotal = 4000;
-const tax = Math.round(subTotal * 0.18);
-const shippingCharges = 400;
-const discount = 400;
-const total = subTotal + tax + shippingCharges;
+import { useDispatch, useSelector } from "react-redux";
+import { cartReducerInitialState } from "../types/reducer-types";
+import { CartItem } from "../types/types";
+import toast from "react-hot-toast";
+import {
+  addToCart,
+  calculatePrice,
+  removeCartItem,
+} from "../redux/reducer/cartReducer";
 
 const Cart = () => {
+  const dispatch = useDispatch();
+
+  const { cartItems, shippingCharges, subTotal, tax, total, discount } =
+    useSelector(
+      (state: { cartReducer: cartReducerInitialState }) => state.cartReducer
+    );
+
   const [couponCode, setCouponCode] = useState<string>("");
   const [isValidCouponCode, setIsValidCouponCode] = useState<boolean>(false);
+
+  const incrementHandler = (cartItem: CartItem) => {
+    if (cartItem.quantity >= cartItem.stock) return;
+
+    dispatch(addToCart({ ...cartItem, quantity: cartItem.quantity + 1 }));
+  };
+  const decrementHandler = (cartItem: CartItem) => {
+    if (cartItem.quantity <= 1) return;
+    dispatch(addToCart({ ...cartItem, quantity: cartItem.quantity - 1 }));
+  };
+  const removeHandler = (productId: string) => {
+    dispatch(removeCartItem(productId));
+  };
 
   useEffect(() => {
     const timeOutID = setTimeout(() => {
@@ -35,12 +48,26 @@ const Cart = () => {
     };
   }, [couponCode]);
 
+  useEffect(() => {
+    dispatch(calculatePrice());
+  }, [cartItems]);
+
   return (
     <div className="cart">
       <main>
-        {cartItems.length > 0 ? cartItems.map((i, index) => (
-          <CartItem key={index} cartItem={i} />
-        )): (<h1>No Items Added</h1>)}
+        {cartItems.length > 0 ? (
+          cartItems.map((i, index) => (
+            <CartItemCard
+              incrementHandler={incrementHandler}
+              decrementHandler={decrementHandler}
+              removeHandler={removeHandler}
+              key={index}
+              cartItem={i}
+            />
+          ))
+        ) : (
+          <h1>No Items Added</h1>
+        )}
       </main>
       <aside>
         <p>SubTotal: ₹{subTotal}</p>
@@ -68,9 +95,7 @@ const Cart = () => {
               Invalid Code <VscError />
             </span>
           ))}
-          {
-            cartItems.length > 0 && <Link to="/shipping">Checkout</Link>
-          }
+        {cartItems.length > 0 && <Link to="/shipping">Checkout</Link>}
       </aside>
     </div>
   );
