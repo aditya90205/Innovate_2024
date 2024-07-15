@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-catch */
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { User } from "../../types/types"
 import { MessageResponse, UserResponse } from "../../types/api-types";

@@ -19,6 +19,7 @@ const Shipping = lazy(() => import("./pages/Shipping"));
 const Login = lazy(() => import("./pages/Login"));
 const Orders = lazy(() => import("./pages/Orders"));
 const OrderDetails = lazy(() => import("./pages/OrderDetails"));
+const NotFound = lazy(() => import("./pages/NotFound"));
 
 // Admin Routes Importing
 const Dashboard = lazy(() => import("./pages/admin/dashboard"));
@@ -54,7 +55,7 @@ const App = () => {
         dispatch(userNotExist());
       }
     });
-  }, []);
+  }, [dispatch]);
 
   return loading ? (
     <Loader />
@@ -120,6 +121,8 @@ const App = () => {
               element={<TransactionManagement />}
             />
           </Route>
+
+          <Route path="*" element={<NotFound />}/>
         </Routes>
       </Suspense>
       <Toaster position="bottom-center" />
