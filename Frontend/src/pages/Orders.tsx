@@ -2,12 +2,12 @@ import { ReactElement, useEffect, useState } from "react";
 import TableHOC from "../components/admin/TableHOC";
 import { Column } from "react-table";
 import { Link } from "react-router-dom";
-import { userReducerInitialState } from "../types/reducer-types";
 import { useSelector } from "react-redux";
 import { useMyOrdersQuery } from "../redux/api/orderAPI";
 import toast from "react-hot-toast";
 import { CustomError } from "../types/api-types";
 import { Skeleton } from "../components/Loader";
+import { RootState } from "../redux/store";
 
 type DataType = {
   _id: string;
@@ -48,7 +48,7 @@ const column: Column<DataType>[] = [
 const Orders = () => {
 
   const { user } = useSelector(
-    (state: { userReducer: userReducerInitialState }) => state.userReducer
+    (state: RootState)  => state.userReducer
   );
 
   // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
