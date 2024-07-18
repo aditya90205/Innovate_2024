@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-asserted-optional-chain */
 import { ChangeEvent, FormEvent, useState } from "react";
 import AdminSidebar from "../../../components/admin/AdminSidebar";
 import { useNewProductMutation } from "../../../redux/api/productAPI";
@@ -5,6 +6,7 @@ import { useSelector } from "react-redux";
 import { userReducerInitialState } from "../../../types/reducer-types";
 import { useNavigate } from "react-router-dom";
 import { responseToast } from "../../../utils/features";
+import toast from "react-hot-toast";
 
 const NewProduct = () => {
   const { user } = useSelector(
@@ -40,7 +42,7 @@ const NewProduct = () => {
   const submitHandler = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if(!name || !price || !stock || !category || !photo) return;
+    if(!name || !price || stock < 0 || !category || !photo) return toast.error("Please fill all the fields properly");
 
     const formData = new FormData();
 
