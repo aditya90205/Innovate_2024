@@ -1,17 +1,17 @@
 /* eslint-disable @typescript-eslint/no-non-null-asserted-optional-chain */
-import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
 import AdminSidebar from "../../../components/admin/AdminSidebar";
 import { DoughnutChart, PieChart } from "../../../components/admin/Charts";
 import { usePieQuery } from "../../../redux/api/dashboardAPI";
 import { RootState } from "../../../redux/store";
-import { CustomError } from "../../../types/api-types";
+
+import { Navigate } from "react-router-dom";
 import { Skeleton } from "../../../components/Loader";
 
 const PieCharts = () => {
   const { user } = useSelector((state: RootState) => state.userReducer);
 
-  const { data, isError, isLoading, error } = usePieQuery(user?._id!);
+  const { data, isError, isLoading } = usePieQuery(user?._id!);
 
   const order = data?.charts.orderFillfillment!;
   const categories = data?.charts.productCategory!;
@@ -20,7 +20,7 @@ const PieCharts = () => {
   const ageGroup = data?.charts.usersAgeGroup!;
   const adminCustomer = data?.charts.adminCustomer!;
 
-  if (isError) toast.error((error as CustomError).data.message);
+  if (isError) return <Navigate to={"/admin/dashboard"}/>;
 
   return (
     <div className="admin-container">

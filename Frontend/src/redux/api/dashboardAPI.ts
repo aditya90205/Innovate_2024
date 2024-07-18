@@ -10,15 +10,19 @@ export const dashboardAPI = createApi({
   endpoints: (builder) => ({
     stats: builder.query<StatsResponse, string>({
         query: (id) => `stats?id=${id}`,
+        keepUnusedDataFor: 0, //keep the old data for 0 seconds
     }),
     pie: builder.query<PieResponse, string>({
         query: (id) => `pie?id=${id}`,
+        keepUnusedDataFor: 0, 
     }),
     bar: builder.query<BarResponse, string>({
         query: (id) => `bar?id=${id}`,
+        keepUnusedDataFor: 0, 
     }),
     line: builder.query<LineResponse, string>({
         query: (id) => `line?id=${id}`,
+        keepUnusedDataFor: 0, 
     }),
   }),
 });

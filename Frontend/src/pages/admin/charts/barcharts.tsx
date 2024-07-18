@@ -7,21 +7,10 @@ import { useBarQuery } from "../../../redux/api/dashboardAPI";
 import { CustomError } from "../../../types/api-types";
 import toast from "react-hot-toast";
 import { Skeleton } from "../../../components/Loader";
+import { getLastMonths } from "../../../utils/features";
 
-const months = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "Aug",
-  "Sept",
-  "Oct",
-  "Nov",
-  "Dec",
-];
+const { last12Months, last6Months } = getLastMonths();
+console.log(last12Months, last6Months);
 
 const Barcharts = () => {
   const { user } = useSelector((state: RootState) => state.userReducer);
@@ -39,13 +28,14 @@ const Barcharts = () => {
       <main className="chart-container">
         <h1>Bar Charts</h1>
         {isLoading ? (
-          <Skeleton length={20}/>
+          <Skeleton length={20} />
         ) : (
           <>
             <section>
               <BarChart
                 data_1={products}
                 data_2={users}
+                labels={last6Months}
                 title_1="Products"
                 title_2="Users"
                 bgColor_1={`hsl(260, 50%, 30%)`}
@@ -63,7 +53,7 @@ const Barcharts = () => {
                 title_2=""
                 bgColor_1={`hsl(180, 40%, 50%)`}
                 bgColor_2=""
-                labels={months}
+                labels={last12Months}
               />
               <h2>Orders throughout the year</h2>
             </section>
