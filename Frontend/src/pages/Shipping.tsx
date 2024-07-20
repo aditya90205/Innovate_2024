@@ -47,6 +47,7 @@ const Shipping = () => {
         headers: {
           'Content-Type': 'application/json',
         },
+        method: 'POST',
       });
       navigate("/pay", {
         state: data.clientSecret,
