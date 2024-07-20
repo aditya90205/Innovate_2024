@@ -50,7 +50,7 @@ const Shipping = () => {
       });
       navigate("/pay", {
         state: data.clientSecret,
-      })
+      });
       console.log(data);
     } catch (error) {
       console.log(error);
