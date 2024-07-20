@@ -15,7 +15,7 @@ export const myOrders = TryCatch(async (req, res, next) => {
   if (myCache.has(`my-orders-${user}`))
     orders = JSON.parse(myCache.get(`my-orders-${user}`) as string);
   else {
-    orders = await Order.find({ user });
+    orders = await Order.find({ user: user as string });
     myCache.set(`my-orders-${user}`, JSON.stringify(orders));
   }
 
