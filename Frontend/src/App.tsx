@@ -12,7 +12,6 @@ import { userExist, userNotExist } from "./redux/reducer/userReducer";
 import { userReducerInitialState } from "./types/reducer-types";
 import Footer from "./components/Footer";
 
-
 // lazy function is used for rendering a page when its called not all the time therefore they preventing the network traffic
 const Home = lazy(() => import("./pages/Home"));
 const Search = lazy(() => import("./pages/Search"));
@@ -47,6 +46,7 @@ const App = () => {
   const { user, loading } = useSelector(
     (state: { userReducer: userReducerInitialState }) => state.userReducer
   );
+
   const dispatch = useDispatch();
   useEffect(() => {
     onAuthStateChanged(auth, async (user) => {
@@ -126,7 +126,7 @@ const App = () => {
             />
           </Route>
 
-          <Route path="*" element={<NotFound />}/>
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>
       <Footer />
