@@ -1,19 +1,18 @@
+import axios from "axios";
 import { useEffect, useState } from "react";
 import { VscError } from "react-icons/vsc";
-import CartItemCard from "../components/CartItem";
-import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { cartReducerInitialState } from "../types/reducer-types";
-import { CartItem } from "../types/types";
-import toast from "react-hot-toast";
+import { Link } from "react-router-dom";
+import CartItemCard from "../components/CartItem";
 import {
   addToCart,
   calculatePrice,
   discountApplied,
   removeCartItem,
 } from "../redux/reducer/cartReducer";
-import axios from "axios";
 import { server } from "../redux/store";
+import { cartReducerInitialState } from "../types/reducer-types";
+import { cartItem } from "../types/types";
 
 const Cart = () => {
   const dispatch = useDispatch();
@@ -26,12 +25,12 @@ const Cart = () => {
   const [couponCode, setCouponCode] = useState<string>("");
   const [isValidCouponCode, setIsValidCouponCode] = useState<boolean>(false);
 
-  const incrementHandler = (cartItem: CartItem) => {
+  const incrementHandler = (cartItem: cartItem) => {
     if (cartItem.quantity >= cartItem.stock) return;
 
     dispatch(addToCart({ ...cartItem, quantity: cartItem.quantity + 1 }));
   };
-  const decrementHandler = (cartItem: CartItem) => {
+  const decrementHandler = (cartItem: cartItem) => {
     if (cartItem.quantity <= 1) return;
     dispatch(addToCart({ ...cartItem, quantity: cartItem.quantity - 1 }));
   };

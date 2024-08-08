@@ -10,6 +10,7 @@ import {
   TableOptions,
 } from "react-table";
 
+// eslint-disable-next-line @typescript-eslint/ban-types
 function TableHOC<T extends Object>(
   columns: Column<T>[],
   data: T[],
@@ -46,7 +47,7 @@ function TableHOC<T extends Object>(
 
         <table className="table" {...getTableProps()}>
           <thead>
-            {headerGroups.map((headerGroup) => (
+        ``     {headerGroups.map((headerGroup) => (
               <tr {...headerGroup.getHeaderGroupProps()}>
                 {headerGroup.headers.map((column) => (
                   <th {...column.getHeaderProps(column.getSortByToggleProps())}>

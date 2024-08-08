@@ -25,7 +25,7 @@ export type ShippingInfo = {
   pinCode: string;
 };
 
-export type CartItem = {
+export type cartItem = {
   productId: string;
   photo: string;
   name: string;

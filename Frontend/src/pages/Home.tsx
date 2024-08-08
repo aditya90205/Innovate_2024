@@ -10,7 +10,7 @@ import { Skeleton } from "../components/Loader";
 import ProductCard from "../components/ProductCard";
 import { useLatestProductsQuery } from "../redux/api/productAPI";
 import { addToCart } from "../redux/reducer/cartReducer";
-import { CartItem } from "../types/types";
+import { cartItem } from "../types/types";
 import videoCover from "../assets/videos/cover (1).mp4"
 import { FaAnglesDown } from "react-icons/fa6";
 
@@ -138,7 +138,7 @@ const Home = () => {
 
   const dispatch = useDispatch();
 
-  const addToCartHandler = (cartItem: CartItem) => {
+  const addToCartHandler = (cartItem: cartItem) => {
     if (cartItem.stock < 1) return toast.error("Out of Stock");
 
     dispatch(addToCart(cartItem));

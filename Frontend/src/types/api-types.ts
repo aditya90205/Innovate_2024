@@ -1,4 +1,4 @@
-import { Bar, CartItem, Line, Order, Pie, Product, ShippingInfo, Stats, User } from "./types";
+import { Bar, cartItem, Line, Order, Pie, Product, ShippingInfo, Stats, User } from "./types";
 
 export type CustomError = {
   status: number;
@@ -100,7 +100,7 @@ export type DeleteProductRequest = {
 
 export type NewOrderRequest = {
   shippingInfo: ShippingInfo;
-  orderItems: CartItem[];
+  orderItems: cartItem[];
   subTotal: number;
   tax: number;
   shippingCharges: number;

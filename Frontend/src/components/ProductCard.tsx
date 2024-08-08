@@ -1,6 +1,6 @@
 import { FaPlus } from "react-icons/fa";
 import { server } from "../redux/store";
-import { CartItem } from "../types/types";
+import { cartItem } from "../types/types";
 
 type ProductProps = {
   productId: string;
@@ -8,7 +8,7 @@ type ProductProps = {
   name: string;
   price: number;
   stock: number;
-  handler: (cartItem: CartItem) => string | undefined;
+  handler: (cartItem: cartItem) => string | undefined;
 };
 
 const ProductCard = ({

@@ -1,6 +1,6 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { cartReducerInitialState } from "../../types/reducer-types";
-import { CartItem, ShippingInfo } from "../../types/types";
+import { cartItem, ShippingInfo } from "../../types/types";
 
 const initialState: cartReducerInitialState = {
   loading: false,
@@ -23,11 +23,11 @@ export const cartReducer = createSlice({
   name: "cartReducer",
   initialState,
   reducers: {
-    addToCart: (state, action: PayloadAction<CartItem>) => {
+    addToCart: (state, action: PayloadAction<cartItem>) => {
       state.loading = true;
 
       const index = state.cartItems.findIndex(
-        (i) => i.productId === action.payload.productId
+        (i: { productId: string; }) => i.productId === action.payload.productId
       );
 
       if (index !== -1) state.cartItems[index] = action.payload;
@@ -40,13 +40,13 @@ export const cartReducer = createSlice({
     removeCartItem: (state, action: PayloadAction<string>) => {
       state.loading = true;
       state.cartItems = state.cartItems.filter(
-        (i) => i.productId !== action.payload
+        (i: { productId: string; }) => i.productId !== action.payload
       );
       state.loading = false;
     },
 
     calculatePrice: (state) => {
-      const subTotal = state.cartItems.reduce((total, item) => {
+      const subTotal: number = state.cartItems.reduce((total: number, item: cartItem) => {
         return total + item.price * item.quantity;
       }, 0);
 
